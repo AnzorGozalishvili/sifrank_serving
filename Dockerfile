@@ -77,10 +77,13 @@ ADD api.py           /app/
 ADD entrypoint.sh    /app/   
 
 # Download ELMO model weights
-RUN cd /app/data/
+RUN sudo chmod 777 /app/
 RUN curl https://s3-us-west-2.amazonaws.com/allennlp/models/elmo/2x4096_512_2048cnn_2xhighway/elmo_2x4096_512_2048cnn_2xhighway_weights.hdf5 --output elmo_2x4096_512_2048cnn_2xhighway_weights.hdf5 -v
-RUN cd /app/
+RUN sudo mv elmo_2x4096_512_2048cnn_2xhighway_weights.hdf5 data/
 
 # Run flask api
-ENTRYPOINT ["sh"]
-CMD ["entrypoint.sh"]
+RUN ls /app/data/
+WORKDIR /app/
+RUN ls -al
+ENTRYPOINT ["python3"]
+CMD ["api.py"]

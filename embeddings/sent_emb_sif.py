@@ -18,7 +18,7 @@ class SentEmbeddings:
     def __init__(self, word_embeddor, data_dir, weightpara_pretrain=2.7e-4, weightpara_finetune=2.7e-4,
                  lamda=1.0, database="", embeddings_type="elmo"):
 
-        weightfile_pretrain = f'{data_dir}enwiki_vocab_min200.txt',
+        weightfile_pretrain = f'{data_dir}enwiki_vocab_min200.txt'
 
         if (database == "Inspec"):
             weightfile_finetune = f'{data_dir}inspec_vocab.txt'
