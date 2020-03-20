@@ -192,7 +192,10 @@ def SIFRank(text, SIF, en_model, method="average", N=15,
     dist_all = get_all_dist(candidate_embeddings_list, text_obj, dist_list)
     dist_final = get_final_dist(dist_all, method=method)
     dist_sorted = sorted(dist_final.items(), key=lambda x: x[1], reverse=True)
-    return dist_sorted[0:N]
+    keywords = [item[0] for item in dist_sorted]
+    relevance = [item[1] for item in dist_sorted]
+
+    return keywords, relevance
 
 
 def SIFRank_plus(text, SIF, en_model, method="average", N=15,
@@ -222,4 +225,7 @@ def SIFRank_plus(text, SIF, en_model, method="average", N=15,
         if np in position_score:
             dist_final[np] = dist * position_score[np] / average_score  # Little change here
     dist_sorted = sorted(dist_final.items(), key=lambda x: x[1], reverse=True)
-    return dist_sorted[0:N]
+    keywords = [item[0] for item in dist_sorted]
+    relevance = [item[1] for item in dist_sorted]
+
+    return keywords, relevance

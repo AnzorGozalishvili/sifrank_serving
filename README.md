@@ -82,8 +82,8 @@ if __name__ == '__main__':
 
 You can simply query from terminal
 ```bash
-wget http://0.0.0.0:5000/sifrank?q="some text here"&n=10
-wget http://0.0.0.0:5000/sifrankplus?q="some text here"&n=10
+wget http://0.0.0.0:5001/sifrank?q="some text here"&n=10
+wget http://0.0.0.0:5001/sifrankplus?q="some text here"&n=10
 
 ```
 
@@ -95,7 +95,7 @@ import requests
 text = "sample text to extract keywords from"
 top_n = 15
 
-url = f"http://0.0.0.0:5000?q={text}&n={top_n}"
+url = f"http://0.0.0.0:5001?q={text}&n={top_n}"
 result = requests.get(url)
 content = json.loads(result.content)
 
