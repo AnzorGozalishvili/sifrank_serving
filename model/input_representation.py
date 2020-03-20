@@ -18,7 +18,7 @@ class InputTextObj:
         :param en_model: the pipeline of tokenization and POS-tagger
         :param considered_tags: The POSs we want to keep
         """
-        self.phrase_extractor = PhraseExtractor
+        self.phrase_extractor = PhraseExtractor()
 
         # get Document object of stanza (latest StanfordCoreNLP model)
         doc = en_model(text)
