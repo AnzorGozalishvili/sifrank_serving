@@ -1,0 +1,10 @@
+version: '2.3'
+services:
+  sifrank_serving:
+    container_name: sifrank_serving
+    build: .
+    ports:
+      - "5001:5000"
+    runtime: nvidia
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
