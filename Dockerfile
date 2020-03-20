@@ -54,25 +54,33 @@ RUN conda install -y -c pytorch \
 # Install OpenCV3 Python bindings
 RUN sudo apt-get update
 
-# Install requirements
-WORKDIR /
-ADD requirements.txt /
+# Add requirements file
+WORKDIR /app/
+ADD requirements.txt /app/
 
-# explicitly install jsonnet
+# Explicitly install jsonnet (for allennlp)
 RUN conda install -c conda-forge jsonnet
 
+# Install requirements
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 
 # Download NLTK data
 RUN python3 -c "import nltk; nltk.download('punkt'); nltk.download('wordnet'); nltk.download('stopwords'); import stanza; stanza.download('en');"
 
-# Download ELMO model weights
-ADD . /
-RUN cd /data/
-RUN wget https://s3-us-west-2.amazonaws.com/allennlp/models/elmo/2x4096_512_2048cnn_2xhighway/elmo_2x4096_512_2048cnn_2xhighway_weights.hdf5
-RUN cd /
+# Move required resources                     
+ADD data/            /app/data/
+ADD embeddings/      /app/embeddings/  
+ADD model/           /app/model/  
+ADD test/            /app/test/  
+ADD api.py           /app/  
+ADD entrypoint.sh    /app/   
 
-# run flask api
+# Download ELMO model weights
+RUN cd /app/data/
+RUN curl https://s3-us-west-2.amazonaws.com/allennlp/models/elmo/2x4096_512_2048cnn_2xhighway/elmo_2x4096_512_2048cnn_2xhighway_weights.hdf5 --output elmo_2x4096_512_2048cnn_2xhighway_weights.hdf5 -v
+RUN cd /app/
+
+# Run flask api
 ENTRYPOINT ["sh"]
 CMD ["entrypoint.sh"]

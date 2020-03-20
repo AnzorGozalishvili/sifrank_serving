@@ -6,6 +6,7 @@ import stanza
 from embeddings import sent_emb_sif, word_emb_elmo
 from model.method import SIFRank, SIFRank_plus
 
+
 app = Flask(__name__)
 
 
