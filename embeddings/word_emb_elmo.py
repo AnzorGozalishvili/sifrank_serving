@@ -12,9 +12,7 @@ class WordEmbeddings():
 
     """
 
-    def __init__(self,
-                 options_file="../data/elmo_2x4096_512_2048cnn_2xhighway_options.json",
-                 weight_file="../data/elmo_2x4096_512_2048cnn_2xhighway_weights.hdf5", cuda_device=0):
+    def __init__(self, options_file, weight_file, cuda_device=0):
         self.cuda_device = cuda_device
         self.elmo = ElmoEmbedder(options_file, weight_file, cuda_device=self.cuda_device)
 

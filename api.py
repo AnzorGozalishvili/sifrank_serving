@@ -6,7 +6,6 @@ import stanza
 from embeddings import sent_emb_sif, word_emb_elmo
 from model.method import SIFRank, SIFRank_plus
 
-
 app = Flask(__name__)
 
 
@@ -29,13 +28,14 @@ def sifrankplus():
 
 
 if __name__ == '__main__':
-    # download from https://allennlp.org/elmo
-    options_file = "/data/elmo_2x4096_512_2048cnn_2xhighway_options.json"
-    weight_file = "/data/elmo_2x4096_512_2048cnn_2xhighway_weights.hdf5"
+    data_dir = "data/"
+    options_file = f"{data_dir}elmo_2x4096_512_2048cnn_2xhighway_options.json"
+    weight_file = f"{data_dir}elmo_2x4096_512_2048cnn_2xhighway_weights.hdf5"
+    cuda_device = 0
 
     porter = nltk.PorterStemmer()
-    ELMO = word_emb_elmo.WordEmbeddings(options_file, weight_file)
-    SIF = sent_emb_sif.SentEmbeddings(ELMO, lamda=1.0)
+    ELMO = word_emb_elmo.WordEmbeddings(options_file=options_file, weight_file=weight_file, cuda_device=cuda_device)
+    SIF = sent_emb_sif.SentEmbeddings(word_embeddor=ELMO, data_dir=data_dir, lamda=1.0)
     en_model = stanza.Pipeline(lang='en', processors={}, use_gpu=True)
     elmo_layers_weight = [0.0, 1.0, 0.0]
 

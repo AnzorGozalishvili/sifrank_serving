@@ -13,24 +13,21 @@ wnl = nltk.WordNetLemmatizer()
 considered_tags = {'NN', 'NNS', 'NNP', 'NNPS', 'JJ', 'VBG'}
 
 
-class SentEmbeddings():
+class SentEmbeddings:
 
-    def __init__(self,
-                 word_embeddor,
-                 weightfile_pretrain='../data/enwiki_vocab_min200.txt',
-                 weightfile_finetune='../data/inspec_vocab.txt',
-                 weightpara_pretrain=2.7e-4,
-                 weightpara_finetune=2.7e-4,
+    def __init__(self, word_embeddor, data_dir, weightpara_pretrain=2.7e-4, weightpara_finetune=2.7e-4,
                  lamda=1.0, database="", embeddings_type="elmo"):
 
+        weightfile_pretrain = f'{data_dir}enwiki_vocab_min200.txt',
+
         if (database == "Inspec"):
-            weightfile_finetune = '../data/inspec_vocab.txt'
+            weightfile_finetune = f'{data_dir}inspec_vocab.txt'
         elif (database == "Duc2001"):
-            weightfile_finetune = '../data/duc2001_vocab.txt'
+            weightfile_finetune = f'{data_dir}duc2001_vocab.txt'
         elif (database == "SemEval2017"):
-            weightfile_finetune = '../data/semeval_vocab.txt'
+            weightfile_finetune = f'{data_dir}semeval_vocab.txt'
         else:
-            weightfile_finetune = '../data/enwiki_vocab_min200.txt'
+            weightfile_finetune = f'{data_dir}enwiki_vocab_min200.txt'
 
         self.word2weight_pretrain = get_word_weight(weightfile_pretrain, weightpara_pretrain)
         self.word2weight_finetune = get_word_weight(weightfile_finetune, weightpara_finetune)
