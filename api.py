@@ -1,27 +1,32 @@
 #!/usr/bin/env python
 
 import nltk
-from flask import Flask, jsonify, request
 import stanza
+from flask import Flask, jsonify, request
+
 from embeddings import sent_emb_sif, word_emb_elmo
 from model.method import SIFRank, SIFRank_plus
 
 app = Flask(__name__)
 
 
-@app.route('/sifrank')
+@app.route('/sifrank', methods=['POST'])
 def sifrank():
-    query = request.args.get('q')
-    top_n = int(request.args.get('n', 15))
+    data = request.json
+    query = data.get("text", "")
+    top_n = int(data.get("n", 15))
+
     keywords = SIFRank(query, SIF, en_model, N=top_n, elmo_layers_weight=elmo_layers_weight)
 
     return jsonify(keywords)
 
 
-@app.route('/sifrankplus')
+@app.route('/sifrankplus', methods=['POST'])
 def sifrankplus():
-    query = request.args.get('q')
-    top_n = int(request.args.get('n', 15))
+    data = request.json
+    query = data.get("text", "")
+    top_n = int(data.get("n", 15))
+
     keywords = SIFRank_plus(query, SIF, en_model, N=top_n, elmo_layers_weight=elmo_layers_weight)
 
     return jsonify(keywords)

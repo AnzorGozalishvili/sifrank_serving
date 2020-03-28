@@ -35,72 +35,90 @@ This return for each text a tuple containing three lists:
 
 ```python
 import nltk
-from flask import Flask, jsonify, request
 import stanza
+from flask import Flask, jsonify, request
+
 from embeddings import sent_emb_sif, word_emb_elmo
 from model.method import SIFRank, SIFRank_plus
-import os
 
 app = Flask(__name__)
 
 
-@app.route('/sifrank')
+@app.route('/sifrank', methods=['POST'])
 def sifrank():
-    query = request.args.get('q')
-    top_n = int(request.args.get('n', 15))
+    data = request.json
+    query = data.get("text", "")
+    top_n = int(data.get("n", 15))
+
     keywords = SIFRank(query, SIF, en_model, N=top_n, elmo_layers_weight=elmo_layers_weight)
 
     return jsonify(keywords)
 
 
-@app.route('/sifrankplus')
+@app.route('/sifrankplus', methods=['POST'])
 def sifrankplus():
-    query = request.args.get('q')
-    top_n = int(request.args.get('n', 15))
+    data = request.json
+    query = data.get("text", "")
+    top_n = int(data.get("n", 15))
+
     keywords = SIFRank_plus(query, SIF, en_model, N=top_n, elmo_layers_weight=elmo_layers_weight)
 
     return jsonify(keywords)
 
 
 if __name__ == '__main__':
-    # download from https://allennlp.org/elmo
-    options_file = "/data/elmo_2x4096_512_2048cnn_2xhighway_options.json"
-    weight_file = "/data/elmo_2x4096_512_2048cnn_2xhighway_weights.hdf5"
-    cuda_device_id = int(os.environ.get('NVIDIA_VISIBLE_DEVICES', 0))
+    data_dir = "data/"
+    options_file = f"{data_dir}elmo_2x4096_512_2048cnn_2xhighway_options.json"
+    weight_file = f"{data_dir}elmo_2x4096_512_2048cnn_2xhighway_weights.hdf5"
+    cuda_device = 0
 
     porter = nltk.PorterStemmer()
-    ELMO = word_emb_elmo.WordEmbeddings(options_file, weight_file, cuda_device=cuda_device_id)
-    SIF = sent_emb_sif.SentEmbeddings(ELMO, lamda=1.0)
+    ELMO = word_emb_elmo.WordEmbeddings(options_file=options_file, weight_file=weight_file, cuda_device=cuda_device)
+    SIF = sent_emb_sif.SentEmbeddings(word_embeddor=ELMO, data_dir=data_dir, lamda=1.0)
     en_model = stanza.Pipeline(lang='en', processors={}, use_gpu=True)
     elmo_layers_weight = [0.0, 1.0, 0.0]
 
     app.run(host='0.0.0.0', port=5000)
-
 ```
 
-## GET request from bash
+## Curl example to call API
 
 You can simply query from terminal
 ```bash
-wget http://0.0.0.0:5001/sifrank?q="some text here"&n=10
-wget http://0.0.0.0:5001/sifrankplus?q="some text here"&n=10
+curl --location --request POST 'http://0.0.0.0:5000/sifrank' \            
+    --header 'Content-Type: application/json' \
+    --data-raw '{"text": "A New Baseline for Unsupervised Keyphrase Extraction Based on Pre-trained Language Model.", "n":10}'
+    
+curl --location --request POST 'http://0.0.0.0:5000/sifrankplus' \            
+    --header 'Content-Type: application/json' \
+    --data-raw '{"text": "A New Baseline for Unsupervised Keyphrase Extraction Based on Pre-trained Language Model.", "n":10}'
+```
+
+Response
+```bash
 
 ```
 
-## GET request from python
+## POST request from python
 ```python
 import json
 import requests
 
-text = "sample text to extract keywords from"
-top_n = 15
+sifrank_url = f"http://0.0.0.0:5000/sifrank"
+sifrank_plus_url = f"http://0.0.0.0:5000/sifrankplus"
 
-url = f"http://0.0.0.0:5001?q={text}&n={top_n}"
-result = requests.get(url)
-content = json.loads(result.content)
+data = {"text": "A New Baseline for Unsupervised Keyphrase Extraction Based on Pre-trained Language Model.", "lang":"en", "n":10}
+sifrank_result = requests.post(sifrank_url, json=data)
+sifrank_plus_result = requests.post(sifrank_plus_url, json=data)
 
-keywords = content[0]
-relevance_scores = content[1]
+sifrank_content = json.loads(sifrank_result.content)
+sifrank_plus_content = json.loads(sifrank_plus_result.content)
+
+sifrank_keywords = sifrank_content[0]
+sifrank_relevance_scores = sifrank_content[1]
+
+sifrank_plus_keywords = sifrank_plus_content[0]
+sifrank_plus_relevance_scores = sifrank_plus_content[1]
 ```
 
 ## Local Run
