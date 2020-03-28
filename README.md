@@ -85,18 +85,19 @@ if __name__ == '__main__':
 
 You can simply query from terminal
 ```bash
-curl --location --request POST 'http://0.0.0.0:5000/sifrank' \            
+curl --location --request POST 'http://0.0.0.0:5001/sifrank' \            
     --header 'Content-Type: application/json' \
     --data-raw '{"text": "A New Baseline for Unsupervised Keyphrase Extraction Based on Pre-trained Language Model.", "n":10}'
     
-curl --location --request POST 'http://0.0.0.0:5000/sifrankplus' \            
+curl --location --request POST 'http://0.0.0.0:5001/sifrankplus' \            
     --header 'Content-Type: application/json' \
     --data-raw '{"text": "A New Baseline for Unsupervised Keyphrase Extraction Based on Pre-trained Language Model.", "n":10}'
 ```
 
 Response
 ```bash
-
+[["pre-trained language model","new baseline","keyphrase extraction"],[0.91609799642446,0.8865735384713,0.8844055415033372]]
+[["new baseline","pre-trained language model","keyphrase extraction"],[0.9202464080510155,0.88569978675073,0.8801616342917246]]
 ```
 
 ## POST request from python
@@ -104,8 +105,8 @@ Response
 import json
 import requests
 
-sifrank_url = f"http://0.0.0.0:5000/sifrank"
-sifrank_plus_url = f"http://0.0.0.0:5000/sifrankplus"
+sifrank_url = f"http://0.0.0.0:5001/sifrank"
+sifrank_plus_url = f"http://0.0.0.0:5001/sifrankplus"
 
 data = {"text": "A New Baseline for Unsupervised Keyphrase Extraction Based on Pre-trained Language Model.", "lang":"en", "n":10}
 sifrank_result = requests.post(sifrank_url, json=data)
