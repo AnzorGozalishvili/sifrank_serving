@@ -37,6 +37,7 @@ This return for each text a tuple containing three lists:
 import nltk
 import stanza
 from flask import Flask, jsonify, request
+from waitress import serve
 
 from embeddings import sent_emb_sif, word_emb_elmo
 from model.method import SIFRank, SIFRank_plus
@@ -78,7 +79,7 @@ if __name__ == '__main__':
     en_model = stanza.Pipeline(lang='en', processors={}, use_gpu=True)
     elmo_layers_weight = [0.0, 1.0, 0.0]
 
-    app.run(host='0.0.0.0', port=5000)
+    serve(app, host="0.0.0.0", port=5000)
 ```
 
 ## Curl example to call API
@@ -125,9 +126,10 @@ sifrank_plus_relevance_scores = sifrank_plus_content[1]
 ## Local Run
 
 ## requirements
-```json
+```text
 allennlp==0.9.0
 stanza==1.0.0
+waitress==1.4.3
 ```
 ## Download Models
 * ELMo ``elmo_2x4096_512_2048cnn_2xhighway_options.json`` (already downloaded in `data/`) and 

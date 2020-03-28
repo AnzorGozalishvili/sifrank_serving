@@ -3,6 +3,7 @@
 import nltk
 import stanza
 from flask import Flask, jsonify, request
+from waitress import serve
 
 from embeddings import sent_emb_sif, word_emb_elmo
 from model.method import SIFRank, SIFRank_plus
@@ -44,4 +45,4 @@ if __name__ == '__main__':
     en_model = stanza.Pipeline(lang='en', processors={}, use_gpu=True)
     elmo_layers_weight = [0.0, 1.0, 0.0]
 
-    app.run(host='0.0.0.0', port=5000)
+    serve(app, host="0.0.0.0", port=5000)
